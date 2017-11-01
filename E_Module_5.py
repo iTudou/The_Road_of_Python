@@ -1,7 +1,7 @@
 #!/usr/bin/python
 #coding:utf-8
 
-#####模块介绍
+#####模块介绍@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
 #获取路径
 import sys
 for i in sys.path:
@@ -32,7 +32,7 @@ sys.path.append(pre_path)
 # ...
 # #进入python环境，导入模块检查是否安装成功
 
-#####time & datetime 模块
+#####time & datetime 模块@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
 import time
 print time.time()                               #返回当前系统时间戳（1970年1月1日0时0分0秒开始）
 print time.ctime()                              #输出Tue May 17 16:07:11 2016，当前系统时间
@@ -61,7 +61,7 @@ print new_date
 new_date = datetime.datetime.now() + datetime.timedelta(seconds=120)#比现在+120s
 print new_date
 
-#####random 模块
+#####random 模块@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
 ##随机数
 import random
 print(random.random())          #用于生成一个0到1的随机符点数: 0 <= n < 1.0
@@ -88,7 +88,7 @@ for i in range(4):
         temp = temp + c1
 print(temp)
 
-##os模块
+#####os模块@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
 print os.getcwd()             #获取当前工作目录，即当前python脚本工作的目录路径
 # os.chdir("dirname")         改变当前脚本工作目录；相当于shell下cd
 # os.curdir                   返回当前目录: ('.')
@@ -136,7 +136,7 @@ for ii in range(101):
     sys.stdout.flush()      #强制刷新到屏幕
     time.sleep(0.001)
     
-##json & picle 模块
+#####json & picle 模块@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
 # json，用于字符串 和 python数据类型间进行转换
 # pickle，用于python特有的类型 和 python的数据类型间进行转换
 # Json模块提供了四个功能：dumps、dump、loads、load
@@ -231,3 +231,384 @@ import hmac
 h = hmac.new(bytes('898oaFs09f'))
 h.update(bytes('admin'))
 print(h.hexdigest())
+
+#####XML 模块@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+from xml.etree import ElementTree
+############ 解析方式一 ############
+# 打开文件，读取XML内容
+str_xml = open('LPSX_1.xml', 'r').read()
+# 将字符串解析成xml特殊对象，root代指xml文件的根节点
+root = ElementTree.XML(str_xml)
+
+##修改节点内容
+# 循环所有的year节点
+for node in root.iter('year'):
+    # 将year节点中的内容自增一
+    new_year = int(node.text) + 1
+    node.text = str(new_year)
+    # 设置属性
+    node.set('name', 'alex')
+    node.set('age', '18')
+    # 删除属性
+    del node.attrib['name']
+##删除节点
+# 遍历data下的所有country节点
+for country in root.findall('country'):
+    # 获取每一个country节点下rank节点的内容
+    rank = int(country.find('rank').text)
+
+    if rank > 50:
+        # 删除指定country节点
+        root.remove(country)
+############ 保存文件 ############
+tree = ElementTree.ElementTree(root)
+tree.write("newnew.xml", encoding='utf-8')
+
+############ 解析方式二 ############
+# 直接解析xml文件
+tree = ElementTree.parse("LPSX_1.xml")
+# 获取xml文件的根节点
+root = tree.getroot()
+
+##修改节点内容
+# 循环所有的year节点
+for node in root.iter('year'):
+    # 将year节点中的内容自增一
+    new_year = int(node.text) + 1
+    node.text = str(new_year)
+    # 设置属性
+    node.set('name', 'alex')
+    node.set('age', '18')
+    # 删除属性
+    del node.attrib['name']
+##删除节点
+# 遍历data下的所有country节点
+for country in root.findall('country'):
+    # 获取每一个country节点下rank节点的内容
+    rank = int(country.find('rank').text)
+    if rank > 50:
+        # 删除指定country节点
+        root.remove(country)
+############ 保存文件 ############
+tree.write("newnew.xml", encoding='utf-8')
+
+### 操作
+# 顶层标签
+print(root.tag)
+
+# 遍历XML文档的第二层
+for child in root:
+    # 第二层节点的标签名称和标签属性
+    print(child.tag, child.attrib)
+    # 遍历XML文档的第三层
+    for i in child:
+        # 第二层节点的标签名称和内容
+        print(i.tag,i.text)
+        
+# 遍历XML中所有的year节点
+for node in root.iter('year'):
+    # 节点的标签名称和内容
+    print(node.tag, node.text)
+    
+##3、创建XML文档
+from xml.etree import ElementTree as ET
+#######方法一#######
+# 创建根节点
+root = ET.Element("famliy")
+# 创建节点大儿子
+son1 = ET.Element('son', {'name': 'son1'})
+# 创建小儿子
+son2 = ET.Element('son', {"name": 'son2'})
+# 在大儿子中创建两个孙子
+grandson1 = ET.Element('grandson', {'name': 'son11'})
+grandson2 = ET.Element('grandson', {'name': 'son12'})
+son1.append(grandson1)
+son1.append(grandson2)
+# 把儿子添加到根节点中
+root.append(son1)
+root.append(son2)
+tree = ET.ElementTree(root)
+tree.write('oooo.xml',encoding='utf-8')
+#######方法二#######
+# 创建根节点
+root = ET.Element("famliy")
+# 创建大儿子
+son1 = root.makeelement('son', {'name': 'son1'})
+# 创建小儿子
+son2 = root.makeelement('son', {"name": 'son2'})
+# 在大儿子中创建两个孙子
+grandson1 = son1.makeelement('grandson', {'name': 'son11'})
+grandson2 = son1.makeelement('grandson', {'name': 'son12'})
+son1.append(grandson1)
+son1.append(grandson2)
+# 把儿子添加到根节点中
+root.append(son1)
+root.append(son2)
+tree = ET.ElementTree(root)
+tree.write('oooo.xml',encoding='utf-8')
+#######方法三#######
+# 创建根节点
+root = ET.Element("famliy")
+# 创建节点大儿子
+son1 = ET.SubElement(root, "son", attrib={'name': 'son1'})
+# 创建小儿子
+son2 = ET.SubElement(root, "son", attrib={"name": "son2"})
+# 在大儿子中创建一个孙子
+grandson1 = ET.SubElement(son1, "age", attrib={'name': 'son11'})
+grandson1.text = 'sonson'
+et = ET.ElementTree(root)  #生成文档对象
+et.write("test.xml", encoding="utf-8", xml_declaration=True)
+
+#由于原生保存的XML时默认无缩进，如果想要设置缩进的话， 需要修改保存方式：
+from xml.dom import minidom
+def prettify(elem):
+    """将节点转换成字符串，并添加缩进。
+    """
+    rough_string = ET.tostring(elem, 'utf-8')
+    reparsed = minidom.parseString(rough_string)
+    return reparsed.toprettyxml(indent="\t")
+# 创建根节点
+root = ET.Element("famliy")
+# 创建大儿子
+son1 = root.makeelement('son', {'name': 'son1'})
+# 创建小儿子
+son2 = root.makeelement('son', {"name": 'son2'})
+# 在大儿子中创建两个孙子
+grandson1 = son1.makeelement('grandson', {'name': 'son11'})
+grandson2 = son1.makeelement('grandson', {'name': 'son12'})
+son1.append(grandson1)
+son1.append(grandson2)
+# 把儿子添加到根节点中
+root.append(son1)
+root.append(son1)
+raw_str = prettify(root)
+f = open("xxxoo.xml",'w')
+f.write(raw_str)
+f.close()
+
+##4、命名空间
+ET.register_namespace('com',"http://www.company.com") #some name
+# build a tree structure
+root = ET.Element("{http://www.company.com}STUFF")
+body = ET.SubElement(root, "{http://www.company.com}MORE_STUFF", attrib={"{http://www.company.com}hhh": "123"})
+body.text = "STUFF EVERYWHERE!"
+# wrap it in an ElementTree instance, and save as XML
+tree = ET.ElementTree(root)
+tree.write("page.xml",
+           xml_declaration=True,
+           encoding='utf-8',
+           method="xml")
+
+#####requests 模块@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+#Python标准库中提供了：urllib等模块以供Http请求，但是，它的 API 太渣了。它是为另一个时代、另一个互联网所创建的。它需要巨量的工作，甚至包括各种方法覆盖，来完成最简单的任务。
+#Requests 是使用 Apache2 Licensed 许可证的 基于Python开发的HTTP 库，其在Python内置模块的基础上进行了高度的封装，从而使得Pythoner进行网络请求时，变得美好了许多，使用Requests可以轻而易举的完成浏览器可有的任何操作。
+##使用模块
+#GET请求
+# 1、无参数实例
+import requests
+ret = requests.get('https://github.com/timeline.json')
+print(ret.url)
+print(ret.text)
+# 2、有参数实例
+payload = {'key1': 'value1', 'key2': 'value2'}
+ret = requests.get("http://httpbin.org/get", params=payload)
+print(ret.url)
+print(ret.text)
+
+#POST请求
+# 1、基本POST实例
+payload = {'key1': 'value1', 'key2': 'value2'}
+ret = requests.post("http://httpbin.org/post", data=payload)
+print(ret.text)
+# 2、发送请求头和数据实例
+url = 'https://api.github.com/some/endpoint'
+payload = {'some': 'data'}
+headers = {'content-type': 'application/json'}
+ret = requests.post(url, data=json.dumps(payload), headers=headers)
+print(ret.text)
+print(ret.cookies)
+
+#其他请求
+# requests.get(url, params=None, **kwargs)
+# requests.post(url, data=None, json=None, **kwargs)
+# requests.put(url, data=None, **kwargs)
+# requests.head(url, **kwargs)
+# requests.delete(url, **kwargs)
+# requests.patch(url, data=None, **kwargs)
+# requests.options(url, **kwargs)
+# # 以上方法均是在此方法的基础上构建
+# requests.request(method, url, **kwargs)
+#更多requests模块相关的文档见：http://cn.python-requests.org/zh_CN/latest/
+
+##Http请求和XML实例
+#检测QQ账号是否在线
+# 使用内置模块urllib发送HTTP请求，或者XML格式内容
+# """
+# f = urllib.request.urlopen('http://www.webxml.com.cn//webservices/qqOnlineWebService.asmx/qqCheckOnline?qqCode=630571017')
+# result = f.read().decode('utf-8')
+# """
+# # 使用第三方模块requests发送HTTP请求，或者XML格式内容
+# r = requests.get('http://www.webxml.com.cn//webservices/qqOnlineWebService.asmx/qqCheckOnline?qqCode=424662508')
+# result = r.text
+# # 解析XML格式内容
+# node = ET.XML(result)
+# # 获取内容
+# if node.text == "Y":
+#     print("在线")
+# else:
+#     print("离线")
+
+#查看火车停靠信息
+# 使用内置模块urllib发送HTTP请求，或者XML格式内容
+# """
+# f = urllib.request.urlopen('http://www.webxml.com.cn/WebServices/TrainTimeWebService.asmx/getDetailInfoByTrainCode?TrainCode=G666&UserID=')
+# result = f.read().decode('utf-8')
+# """
+# # 使用第三方模块requests发送HTTP请求，或者XML格式内容
+# r = requests.get('http://www.webxml.com.cn/WebServices/TrainTimeWebService.asmx/getDetailInfoByTrainCode?TrainCode=G666&UserID=')
+# result = r.text
+# # 解析XML格式内容
+# root = ET.XML(result)
+# for node in root.iter('TrainDetailInfo'):
+#     print(node.find('TrainStation').text,node.find('StartTime').text,node.tag,node.attrib)
+
+#查看天气信息
+response = requests.get("http://www.weather.com.cn/data/sk/101010100.html")
+response.encoding = "utf-8"
+result = response.text
+print(result)
+
+#####configparser 模块@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+#configparser用于处理特定格式的文件，其本质上是利用open来操作文件。
+#1、获取所有节点
+import ConfigParser
+con = ConfigParser.ConfigParser()
+con.read("ini")
+result = con.sections()
+print(result)
+#2、获取指定节点下所有的键值对
+# con = ConfigParser.ConfigParser()
+# con.read("ini")
+# result = con.items("nick")
+# print(result)
+#3、获取指定节点下所有的键
+# con = ConfigParser.ConfigParser()
+# con.read("ini")
+# ret = con.options("nick")
+# print(ret)
+#4、获取指定节点下指定key的值
+# con = ConfigParser.ConfigParser()
+# con.read("ini",encoding="utf-8")
+# v = con.get("nick","age")
+# v = con.get("nick","gender")
+# v = con.get("jenny","age")
+# v = con.get("jenny","gender")
+# print(v)
+#5、检查、删除、添加节点
+#检查、删除、添加节点
+# con = ConfigParser.ConfigParser()
+# con.read("ini")
+# #检查
+# has_sec = con.has_section("nick")
+# print(has_sec)
+# #添加节点
+# con.add_section("car")
+# con.write(open("ini","w"))
+# #删除节点
+# con.remove_section("car")
+# con.write(open("ini","w"))
+#6、检查、删除、设置指定组内的键值对
+#检查、删除、设置指定组内的键值对
+# con = ConfigParser.ConfigParser()
+# con.read("ini",encoding="utf-8")
+# #检查
+# hac_opt = con.has_option("nick","age")
+# print(hac_opt)
+# #删除
+# con.remove_option("nick","dearm")
+# con.write(open("ini","w"))
+# #设置
+# con.set("nick","dearm","girl")
+# con.write(open("ini","w"))
+
+#####logging 模块@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+#用于便捷记录日志且线程安全的模块
+import logging
+#1、单日志文件
+logging.basicConfig(filename="log.log",
+                    format="%(asctime)s - %(name)s - %(levelname)s - %(module)s: %(message)s",
+                    datefmt="%Y-%m-%d %H:%M:%S %p",
+                    level=logging.INFO)
+ 
+logging.critical("critical")
+logging.fatal("fatal")
+logging.error("error")
+logging.warn("warn")
+logging.warning("warning")
+logging.info("info")
+logging.debug("debug")
+logging.log(8,"log")
+#日志等级
+"""
+CRITICAL = 50
+FATAL = CRITICAL
+ERROR = 40
+WARNING = 30
+WARN = WARNING
+INFO = 20
+DEBUG = 10
+NOTSET = 0
+"""
+#注：只有【当前写等级】大于【日志等级】时，日志文件才被记录。
+
+#2、多文件日志
+#对于上述记录日志的功能，只能将日志记录在单文件中，如果想要设置多个日志文件，logging.basicConfig将无法完成，需要自定义文件和日志操作对象。
+#日志(一)
+# 定义文件
+file_1_1 = logging.FileHandler('l1_1.log', 'a')
+fmt = logging.Formatter(fmt="%(asctime)s - %(name)s - %(levelname)s -%(module)s:  %(message)s")
+file_1_1.setFormatter(fmt)
+file_1_2 = logging.FileHandler('l1_2.log', 'a')
+fmt = logging.Formatter()
+file_1_2.setFormatter(fmt)
+# 定义日志
+logger1 = logging.Logger('s1', level=logging.ERROR)
+logger1.addHandler(file_1_1)
+logger1.addHandler(file_1_2)
+# 写日志
+logger1.critical('1111')
+#日志(二)
+# 定义文件
+file_2_1 = logging.FileHandler('l2_1.log', 'a')
+fmt = logging.Formatter()
+file_2_1.setFormatter(fmt)
+# 定义日志
+logger2 = logging.Logger('s2', level=logging.INFO)
+logger2.addHandler(file_2_1)
+
+# 如上述创建的两个日志对象
+# 当使用【logger1】写日志时，会将相应的内容写入 l1_1.log 和 l1_2.log 文件中
+# 当使用【logger2】写日志时，会将相应的内容写入 l2_1.log 文件中
+
+#记录日志及按天切割实例
+# from logging.handlers import TimedRotatingFileHandler
+#     base = os.path.abspath(os.path.dirname(__file__))
+#     logfile = os.path.join(base, 'test', 'testlog')
+#     handler = TimedRotatingFileHandler(filename=logfile, when='MIDNIGHT',
+#                                                       interval=1, backupCount=365)
+#     handler.suffix = "%Y%m%d.log"
+#     handler.setFormatter(logging.Formatter('%(asctime)s\t%(levelname)-8s\t%(message)s'))
+#     handler.setLevel(logging.DEBUG)
+#     apipartnerlogger = logging.getLogger(logfile)
+#     apipartnerlogger.addHandler(handler)
+#     apipartnerlogger.setLevel(logging.INFO)
+
+#####shutil 模块@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+#高级的 文件、文件夹、压缩包 处理模块
+import shutil
+#shutil.copyfileobj(fsrc, fdst[, length])    将文件内容拷贝到另一个文件中
+shutil.copyfileobj(open('old.xml','r'), open('new.xml', 'w'))
+#shutil.copyfile(src, dst)                    拷贝文件
+shutil.copyfile('f1.log', 'f2.log')
+#shutil.copymode(src, dst)                    仅拷贝权限。内容、组、用户均不变
+shutil.copymode('f1.log', 'f2.log')
