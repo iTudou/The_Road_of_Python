@@ -609,6 +609,157 @@ import shutil
 #shutil.copyfileobj(fsrc, fdst[, length])    将文件内容拷贝到另一个文件中
 shutil.copyfileobj(open('old.xml','r'), open('new.xml', 'w'))
 #shutil.copyfile(src, dst)                    拷贝文件
-shutil.copyfile('f1.log', 'f2.log')
+shutil.copyfile('old.xml', 'old2.xml')
 #shutil.copymode(src, dst)                    仅拷贝权限。内容、组、用户均不变
-shutil.copymode('f1.log', 'f2.log')
+# shutil.copymode('old2.xml', 'f2.log')
+# #shutil.copystat(src, dst)                    拷贝状态的信息，包括：mode bits, atime, mtime, flags
+# shutil.copystat('f1.log', 'f2.log')
+# #shutil.copy(src, dst)                        拷贝文件和权限
+# shutil.copy('f1.log', 'f2.log')
+# #shutil.copy2(src, dst)                       拷贝文件和状态信息
+# shutil.copy2('f1.log', 'f2.log')
+# #shutil.ignore_patterns(*patterns)            递归的去拷贝文件夹
+# #shutil.copytree(src, dst, symlinks=False, ignore=None)
+# shutil.copytree('folder1', 'folder2', ignore=shutil.ignore_patterns('*.pyc', 'tmp*'))
+# #shutil.rmtree(path[, ignore_errors[, onerror]])    递归的去删除文件
+# shutil.rmtree('folder1')
+# #shutil.move(src, dst)    递归的去移动文件，它类似mv命令，其实就是重命名。
+# shutil.move('folder1', 'folder3')
+#shutil.make_archive(base_name, format,...)
+#创建压缩包并返回文件路径，例如：zip、tar
+#创建压缩包并返回文件路径，例如：zip、tar
+# base_name： 压缩包的文件名，也可以是压缩包的路径。只是文件名时，则保存至当前目录，否则保存至指定路径，
+# 如：www                        =>保存至当前路径
+# 如：/Users/wupeiqi/www =>保存至/Users/wupeiqi/
+# format： 压缩包种类，“zip”, “tar”, “bztar”，“gztar”
+# root_dir： 要压缩的文件夹路径（默认当前目录）
+# owner： 用户，默认当前用户
+# group： 组，默认当前组
+# logger： 用于记录日志，通常是logging.Logger对象
+#将 /Users/wupeiqi/Downloads/test 下的文件打包放置当前程序目录
+# import shutil
+# ret = shutil.make_archive("wwwwwwwwww", 'gztar', root_dir='/Users/wupeiqi/Downloads/test')
+# #将 /Users/wupeiqi/Downloads/test 下的文件打包放置 /Users/wupeiqi/目录
+# import shutil
+# ret = shutil.make_archive("/Users/wupeiqi/wwwwwwwwww", 'gztar', root_dir='/Users/wupeiqi/Downloads/test')
+
+#shutil 对压缩包的处理是调用 ZipFile 和 TarFile 两个模块来进行的，详细：
+#zipfile解压缩
+# import zipfile
+# z = zipfile.ZipFile("ini.zip","w")
+# z.write("ini")
+# z.write("pip")
+# z.close()
+# #压缩包里追加内容（打开模式变为a）
+# #z = zipfile.ZipFile("ini.zip","a")
+# #z.write("db")
+# z.close()
+# #解压
+# z = zipfile.ZipFile("ini.zip","r")
+# z.extractall()    #解压全部
+# # z.extract("pip")    #解压指定文件
+# z.close()
+
+#tarfile解压缩
+# import tarfile
+# #压缩
+# tar = tarfile.open("ini.zip","w")
+# tar.add("S:\stud\ini",arcname="iiini.txt")    #路径、重命名
+# tar.add("./pip",arcname="pip.log")
+# tar.close()
+# #解压
+# tar = tarfile.open("ini.zip","r")
+# tar.extractall()    #可设置解压地址
+# tar.close()
+
+#####subprocess@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+# 可以执行shell命令的相关模块和函数有：
+# os.system
+# os.spawn*
+# os.popen*          --废弃
+# popen2.*           --废弃
+# commands.*         --废弃，3.x中被移除
+# import commands
+# result = commands.getoutput('cmd')
+# result = commands.getstatus('cmd')
+# result = commands.getstatusoutput('cmd')
+#以上执行shell命令的相关的模块和函数的功能均在 subprocess 模块中实现，并提供了更丰富的功能。
+import subprocess
+#call    执行命令，返回状态码
+ret = subprocess.call(["ls", "-l"], shell=False)
+ret = subprocess.call("ls -l", shell=True)
+#check_call    执行命令，如果执行状态码是 0 ，则返回0，否则抛异常
+subprocess.check_call(["ls", "-l"])
+subprocess.check_call("exit 1", shell=True)
+#check_output   执行命令，如果状态码是 0 ，则返回执行结果，否则抛异常
+subprocess.check_output(["echo", "Hello World!"])
+subprocess.check_output("exit 1", shell=True)
+#subprocess.Popen(...)
+# 用于执行复杂的系统命令
+# 参数：
+# args：shell命令，可以是字符串或者序列类型（如：list，元组）
+# bufsize：指定缓冲。0 无缓冲,1 行缓冲,其他 缓冲区大小,负值 系统缓冲
+# stdin, stdout, stderr：分别表示程序的标准输入、输出、错误句柄
+# preexec_fn：只在Unix平台下有效，用于指定一个可执行对象（callable object），它将在子进程运行之前被调用
+# close_sfs：在windows平台下，如果close_fds被设置为True，则新创建的子进程将不会继承父进程的输入、输出、错误管道。
+# 所以不能将close_fds设置为True同时重定向子进程的标准输入、输出与错误(stdin, stdout, stderr)。
+# shell：同上
+# cwd：用于设置子进程的当前目录
+# env：用于指定子进程的环境变量。如果env = None，子进程的环境变量将从父进程中继承。
+# universal_newlines：不同系统的换行符不同，True -> 同意使用 \n
+# startupinfo与createionflags只在windows下有效
+# 将被传递给底层的CreateProcess()函数，用于设置子进程的一些属性，如：主窗口的外观，进程的优先级等等 
+# ret1 = subprocess.Popen(["mkdir","t1"])
+# ret2 = subprocess.Popen("mkdir t2", shell=True)
+# 终端输入的命令分为两种：
+# 输入即可得到输出，如：ifconfig
+# 输入进行某环境，依赖再输入，如：python
+obj = subprocess.Popen("mkdir t3", shell=True, cwd='/home/dev',)
+
+obj = subprocess.Popen(["python"], stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE, universal_newlines=True)
+obj.stdin.write("print(1)\n")
+obj.stdin.write("print(2)")
+obj.stdin.close()
+cmd_out = obj.stdout.read()
+obj.stdout.close()
+cmd_error = obj.stderr.read()
+obj.stderr.close()
+print(cmd_out)
+print(cmd_error)
+
+obj = subprocess.Popen(["python"], stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE, universal_newlines=True)
+obj.stdin.write("print(1)\n")
+obj.stdin.write("print(2)")
+out_error_list = obj.communicate()
+print(out_error_list)
+
+obj = subprocess.Popen(["python"], stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE, universal_newlines=True)
+out_error_list = obj.communicate('print("hello")')
+print(out_error_list)
+
+
+#####smtplib@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+import smtplib
+from email.mime.multipart import MIMEMultipart
+from email.mime.text import MIMEText
+me = 'liwenzhen238@163.com' #'发送的邮箱@net263.com'
+you = 'liwenzhen238@sina.com' #'接收的邮箱@net263.com'
+try:
+    s = smtplib.SMTP()
+    s.connect('smtp.163.com')
+    s.login('liwenzhen238','!li_02620316') # (me, 'me''s password')
+    msg = MIMEMultipart('alternative')
+    msg['Subject'] = "Alert 主题"
+    msg['From'] = me
+    msg['To'] = you
+
+    html = '<html><body><p>Hi, I have the following alerts for you!</p></body></html>'
+    part2 = MIMEText(html, 'html')
+    msg.attach(part2)
+    s.sendmail(me, you, msg.as_string())
+    s.quit()
+except Exception, e:
+    print e
+    
+#####Argparse、Excel文件（xlrd,xlsxwriter）、hashids@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+#这些具体看博客园suoning论坛
